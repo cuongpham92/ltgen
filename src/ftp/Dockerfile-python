@@ -1,0 +1,6 @@
+# Build from python image
+FROM python
+COPY . /src
+RUN python /src/get-pip.py && \
+    pip install numpy
+

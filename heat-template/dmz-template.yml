@@ -1,0 +1,249 @@
+heat_template_version: 2015-10-15
+description: Launch a DMZ topology for traffic generating system
+
+parameters:
+  public_net:
+    type: string
+    description: ID or name of public network for which floating IP addresses will be allocated
+    default: 6d590f8d-8593-411f-a6cb-bd12676b009a
+
+  avail_zone:
+    type: string
+    description: Availability zone to deploy the instance
+    default: compute2
+
+  private_net_name:
+    type: string
+    description: Name of private network to be created
+    default: private1
+
+  dmz_net_name:
+    type: string
+    description: Name of private network DMZ to be created
+    default: dmzdmzdmz
+
+  internal_net_name:
+    type: string
+    description: Name of private network INTERNAL to be created
+    default: internal
+
+  office_net_name:
+    type: string
+    description: Name of private network OFFICE to be created
+    default: office
+
+  private_net_cidr:
+    type: string
+    description: DMZ network address
+    default: 10.20.0.1/24
+
+  dmz_net_cidr:
+    type: string
+    description: DMZ network address
+    default: 10.0.0.1/24
+
+  internal_net_cidr:
+    type: string
+    description: Internal network address
+    default: 10.0.1.1/24
+
+  office_net_cidr:
+    type: string
+    description: Office network address
+    default: 10.0.2.1/24
+
+  router_name:
+    type: string
+    description: Name of router to be created
+    default: router_trf-gen
+
+resources:
+  private_net:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: private_net_name }
+
+  private_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: private_net }
+      cidr: { get_param: private_net_cidr }
+
+  dmz_net:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: dmz_net_name }
+
+  dmz_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: dmz_net }
+      cidr: { get_param: dmz_net_cidr }
+
+  internal_net:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: internal_net_name }
+
+  internal_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: internal_net }
+      cidr: { get_param: internal_net_cidr }
+
+  office_net:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: office_net_name }
+
+  office_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: office_net }
+      cidr: { get_param: office_net_cidr }
+
+  router:
+    type: OS::Neutron::Router
+    properties:
+      external_gateway_info:
+        network: { get_param: public_net }
+
+  router_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router }
+      subnet_id: { get_resource: private_subnet }
+
+  server_firewall:
+    type: OS::Nova::Server
+    properties:
+      name: firewall
+      image: trf_gen-firewall
+      flavor: ram2G-disk25G
+      availability_zone: { get_param: avail_zone }
+      networks:
+      - port: { get_resource: firewall_port }
+      - network: { get_resource: dmz_net }
+      - network: { get_resource: internal_net }
+      - network: { get_resource: office_net }
+
+  firewall_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: private_net }
+      fixed_ips:
+        - subnet_id: { get_resource: private_subnet }
+
+  firewall_floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: { get_param: public_net }
+      port_id: { get_resource: firewall_port }
+
+  server_webserver:
+    type: OS::Nova::Server
+    properties:
+      name: web_server
+      image: trf_gen-webserver
+      flavor: ram2G-disk25G
+      availability_zone: { get_param: avail_zone }
+      networks:
+      - network: { get_resource: internal_net }
+
+  server_mail:
+    type: OS::Nova::Server
+    properties:
+      name: mail_server
+      image: trf_gen-mail
+      flavor: ram2G-disk25G
+      availability_zone: { get_param: avail_zone }
+      networks:
+      - network: { get_resource: internal_net }
+
+  server_smbserver:
+    type: OS::Nova::Server
+    properties:
+      name: smb_server
+      image: trf_gen-smb
+      flavor: ram2G-disk25G
+      availability_zone: { get_param: avail_zone }
+      networks:
+      - network: { get_resource: internal_net }
+
+  server_ftp:
+    type: OS::Nova::Server
+    properties:
+      name: ftp_server
+      image: trf_gen-ftp
+      flavor: ram2G-disk25G
+      availability_zone: { get_param: avail_zone }
+      networks:
+      - network: { get_resource: dmz_net }
+
+  server_client1:
+    type: OS::Nova::Server
+    properties:
+      name: client1
+      image: trf_gen-client1
+      flavor: ram2G-disk25G
+      availability_zone: { get_param: avail_zone }
+      networks:
+      - network: { get_resource: office_net }
+
+  server_client2:
+    type: OS::Nova::Server
+    properties:
+      name: client2
+      image: trf_gen-client4
+      flavor: ram2G-disk25G
+      availability_zone: { get_param: avail_zone }
+      networks:
+      - network: { get_resource: office_net }
+
+  server_client3:
+    type: OS::Nova::Server
+    properties:
+      name: client3
+      image: trf_gen-client4
+      flavor: ram2G-disk25G
+      availability_zone: { get_param: avail_zone }
+      networks:
+      - network: { get_resource: office_net }
+
+  server_client4:
+    type: OS::Nova::Server
+    properties:
+      name: client4
+      image: trf_gen-client4
+      flavor: ram2G-disk25G
+      availability_zone: { get_param: avail_zone }
+      networks:
+      - network: { get_resource: office_net }
+
+  server_client5:
+    type: OS::Nova::Server
+    properties:
+      name: client5
+      image: trf_gen-client4
+      flavor: ram2G-disk25G
+      availability_zone: { get_param: avail_zone }
+      networks:
+      - network: { get_resource: office_net }
+
+  server_attacker:
+    type: OS::Nova::Server
+    properties:
+      name: attacker
+      image: trf_gen-attacker
+      flavor: ram2G-disk25G
+      availability_zone: { get_param: avail_zone }
+      networks:
+      - network: { get_resource: office_net }
+
+outputs:
+  instance_name:
+    description: Name of the instance.
+    value: { get_attr: [ server_firewall, name ] }
+  instance_ip:
+    description: IP address of the instance.
+    value: { get_attr: [ server_firewall, first_address ] }

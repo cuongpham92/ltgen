@@ -1,0 +1,3 @@
+# This file is for inputting traffic rate and corresponding protocol weights.
+1507698 pcaps1
+0.9983 0.0006 0.0009 0.0002

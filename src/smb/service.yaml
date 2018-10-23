@@ -1,0 +1,105 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "name": "ping-deployment"
+  },
+  "spec": {
+    "restartPolicy": "Never",
+    "containers": [{ 
+      "name": "ping-machine",
+      "image": "fpt:v4",
+      "command": "ping 8.8.8.8"
+    }]
+  }
+} 
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "name": "ping-deployment"
+  },
+  "spec": {
+    "restartPolicy": "Never",
+    "containers": [{ 
+      "name": "ping-machine",
+      "image": "fpt:v4",
+      "command": "ping 8.8.8.8"
+    }]
+  }
+} 
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "name": "ping-deployment"
+  },
+  "spec": {
+    "restartPolicy": "Never",
+    "containers": [{ 
+      "name": "ping-machine",
+      "image": "fpt:v4",
+      "command": "ping 8.8.8.8"
+    }]
+  }
+} 
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "name": "ping-deployment"
+  },
+  "spec": {
+    "restartPolicy": "Never",
+    "containers": [{ 
+      "name": "ping-machine",
+      "image": "fpt:v4",
+      "command": "ping 8.8.8.8"
+    }]
+  }
+} 
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "name": "ping-deployment"
+  },
+  "spec": {
+    "restartPolicy": "Never",
+    "containers": [{ 
+      "name": "ping-machine",
+      "image": "fpt:v4",
+      "command": "ping 8.8.8.8"
+    }]
+  }
+} 
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "name": "ping-deployment"
+  },
+  "spec": {
+    "restartPolicy": "Never",
+    "containers": [{ 
+      "name": "ping-machine",
+      "image": "fpt:v4",
+      "command": "ping 8.8.8.8"
+    }]
+  }
+} 
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "name": "ping-deployment"
+  },
+  "spec": {
+    "restartPolicy": "Never",
+    "containers": [{ 
+      "name": "ping-machine",
+      "image": "fpt:v4",
+      "command": "ping 8.8.8.8"
+    }]
+  }
+} 
