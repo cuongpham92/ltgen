@@ -17,9 +17,13 @@ Some key issues that must not be forgotten before proceeding to run LTGen are:
 
 * The configuration file `rate_timetable.txt` is for inputting an interval and a throughput of traffic generated during that interval;
 
-* The configuration file `protocol_weight.txt` is for inputting in one line the distrubtion weights among different protocols. The order of values are HTTP, IMAP, SMTP, and FTP.
+* The configuration file `protocol_weight.txt` is for inputting in one line the distrubtion weights among different protocols. The order of values are HTTP, IMAP, SMTP, and FTP;
 
-Once these files are prepared, one can run LTGen by:
+* LTGen runs using Docker Swarm. Choose a client in the topology as the leader, and create a swarm cluster (see more at [Docker Swarm documentation](https://docs.docker.com/engine/swarm/swarm-mode/));
+
+* On the leader machine, go to the file `src/main.py` and change the line `DOCKER_WORKERS = "..."` by the actual IP address of other client machines.
+
+Once these steps are done, one can run LTGen by:
 
   `$ python3 main.py`
 
